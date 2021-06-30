@@ -2,27 +2,14 @@ import './App.css';
 import Header from "./component/Header";
 import Todos from "./component/Todos";
 import Footer from "./component/Footer";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 function App() {
 
-  let [todoList, stateTodoList] = useState([
-    {
-      id: 11,
-      title: 'TODO 1',
-      desc: 'This is a todo item 1'
-    },
-    {
-      id: 21,
-      title: 'TODO 2',
-      desc: 'This is a todo item 2'
-    },
-    {
-      id: 31,
-      title: 'TODO 3',
-      desc: 'This is a todo item 3'
-    }
-  ])
+  let [todoList, setTodo] = useState(JSON.parse(localStorage.getItem('todoList')) || [])
+  useEffect(() => {
+    localStorage.setItem('todoList', JSON.stringify(todoList))
+  }, [todoList])
 
   const onDelete = (id) => {
     /**
@@ -34,13 +21,31 @@ function App() {
     //   console.log(todoIndex)
     //   todoList.splice(todoIndex, 1)
     // }
-    stateTodoList(todoList.filter(todo => todo.id !== id))
+    setTodo(todoList.filter(todo => todo.id !== id))
+    // localStorage.setItem('todoList', JSON.stringify(todoList))
+  }
+
+  const addTodo = (title, desc) => {
+    let id
+    if (todoList && todoList.length > 0) {
+      id = todoList[todoList.length - 1].id + 1
+    } else {
+      id = 0
+    }
+    const newTodo = {
+      id: id,
+      title: title,
+      desc: desc
+    }
+    setTodo([...todoList, newTodo])
+    // localStorage.setItem('todoList', JSON.stringify(todoList))
   }
 
   return (
     <div className="App">
       <Header title='My TODO List' showSearchBar={true}/>
-      <Todos todos={todoList} onDelete={onDelete}/>
+      {/*<button onClick={addTodo}/>*/}
+      <Todos todos={todoList} onDelete={onDelete} addTodo={addTodo}/>
       <Footer/>
     </div>
   );
