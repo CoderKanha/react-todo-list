@@ -3,6 +3,8 @@ import Header from "./component/Header";
 import Todos from "./component/Todos";
 import Footer from "./component/Footer";
 import {useEffect, useState} from "react";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import About from "./component/About";
 
 function App() {
 
@@ -22,7 +24,6 @@ function App() {
     //   todoList.splice(todoIndex, 1)
     // }
     setTodo(todoList.filter(todo => todo.id !== id))
-    // localStorage.setItem('todoList', JSON.stringify(todoList))
   }
 
   const addTodo = (title, desc) => {
@@ -38,16 +39,35 @@ function App() {
       desc: desc
     }
     setTodo([...todoList, newTodo])
-    // localStorage.setItem('todoList', JSON.stringify(todoList))
   }
 
   return (
-    <div className="App">
-      <Header title='My TODO List' showSearchBar={true}/>
-      {/*<button onClick={addTodo}/>*/}
-      <Todos todos={todoList} onDelete={onDelete} addTodo={addTodo}/>
-      <Footer/>
-    </div>
+    <Router>
+      <div className="App">
+        <Header title='My TODO List' showSearchBar={true}/>
+        <Switch>
+          <Route exact path="/" render={() => {
+            return (
+              <>
+                <Todos todos={todoList} onDelete={onDelete} addTodo={addTodo}/>
+              </>
+            )
+          }}>
+          </Route>
+          <Route exact path="/about" render={() => {
+            return (
+              <>
+                <About/>
+              </>
+            )
+          }}>
+          </Route>
+
+        </Switch>
+        <Footer/>
+      </div>
+
+    </Router>
   );
 }
 
